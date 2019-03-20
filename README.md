@@ -2,14 +2,15 @@
 
 ## Getting started
 
-### 1.- Clone valet-install
+### Clone valet-install to ~/.vi
 
 `git clone git@github.com:PMET-public/valet-install.git ~/.vi`
 
-### Set your auth.json credentials
+### Set your global auth.json credentials
 
 1. `cd ~/.vi`
 2. `cp auth.json.sample auth.json`
+3. `code auth.json`
 
 ### PATH that Bash up!
 
