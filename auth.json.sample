@@ -1,0 +1,15 @@
+{
+    "github-oauth": {
+        "github.com": ""
+    },
+    "http-basic": {
+        "repo.magento.com": {
+            "username": "",
+            "password": ""
+        },
+        "connect20-qa01.magedevteam.com": {
+            "username": "",
+            "password": ""
+        }
+    }
+}

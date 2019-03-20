@@ -1,0 +1,210 @@
+#!/bin/sh
+#
+# A script for magento 2 installation
+# in a Valet + environment.
+
+usage() {
+  echo "Utility for using Valet + in dev with supporting apps"
+  echo "Usage:  vp [action]"
+  echo ""
+  echo "Actions:"
+  printf "  %-15s%-30s\n" "-i" "Install Magento"
+  echo ""
+
+}
+
+# SCRIPTNAME contains the name
+# of the current script (e.g. "server")
+SCRIPTNAME="bin/$(basename $0)"
+
+# PROJECTPATH contains the full
+# directory path of the project itself
+PROJECTPATH=$(pwd)
+
+# CURRENTDIR gets the name of the
+# install directory to be used for
+# db name and dns
+CURRENTDIR=${PWD##*/}
+
+
+# ENVIRONMENTVARIABLESFILE contains the path
+# to the file that holds the required environment
+# variables for this script.
+ENVIRONMENTVARIABLESFILE="$PROJECTPATH/.env"
+if [ ! -f $ENVIRONMENTVARIABLESFILE ]; then
+  echo >&2 "The file that holds the environment variables was not found at $ENVIRONMENTVARIABLESFILE"
+  exit 1
+fi
+
+
+# execute the file that sets the environment variables
+. $ENVIRONMENTVARIABLESFILE
+
+if [ -z "$DATABASE_USER" ]; then
+  echo >&2 "The DATABASE_USER variable is not set"
+  exit 1
+fi
+
+if [ -z "$DATABASE_PASSWORD" ]; then
+  echo >&2 "The DATABASE_PASSWORD variable is not set"
+  exit 1
+fi
+
+if [ -z "$ADMIN_USERNAME" ]; then
+  echo >&2 "The ADMIN_USERNAME variable is not set"
+  exit 1
+fi
+
+if [ -z "$ADMIN_FIRSTNAME" ]; then
+  echo >&2 "The ADMIN_FIRSTNAME variable is not set"
+  exit 1
+fi
+
+if [ -z "$ADMIN_LASTNAME" ]; then
+  echo >&2 "The ADMIN_LASTNAME variable is not set"
+  exit 1
+fi
+
+if [ -z "$ADMIN_EMAIL" ]; then
+  echo >&2 "The ADMIN_EMAIL variable is not set"
+  exit 1
+fi
+
+if [ -z "$ADMIN_PASSWORD" ]; then
+  echo >&2 "The ADMIN_PASSWORD variable is not set"
+  exit 1
+fi
+
+if [ -z "$DEFAULT_LANGUAGE" ]; then
+  echo >&2 "The DEFAULT_LANGUAGE variable is not set"
+  exit 1
+fi
+
+if [ -z "$DEFAULT_CURRENCY" ]; then
+  echo >&2 "The DEFAULT_CURRENCY variable is not set"
+  exit 1
+fi
+
+if [ -z "$DEFAULT_TIMEZONE" ]; then
+  echo >&2 "The DEFAULT_TIMEZONE variable is not set"
+  exit 1
+fi
+
+if [ -z "$BACKEND_FRONTNAME" ]; then
+  echo >&2 "The BACKEND_FRONTNAME variable is not set"
+  exit 1
+fi
+
+
+#######################################
+# Install Magento
+# Globals:
+#   DATABASE_USER
+#   DATABASE_PASSWORD
+#   ADMIN_USERNAME
+#   ADMIN_FIRSTNAME
+#   ADMIN_LASTNAME
+#   ADMIN_EMAIL
+#   ADMIN_PASSWORD
+#   DEFAULT_LANGUAGE
+#   DEFAULT_CURRENCY
+#   DEFAULT_TIMEZONE
+#   BACKEND_FRONTNAME
+# Arguments:
+#   none
+# Returns:
+#   None
+#######################################
+installMagento(){
+
+  # Delete config before install
+  rm -f app/etc/env.php
+  rm -f app/etc/config.php
+
+  # apply patches
+  php vendor/magentoese/ece-tools/bin/ece-tools patch
+
+  # drop database
+  valet db drop ${CURRENTDIR} -y
+
+  # create new database
+  valet db create ${CURRENTDIR}
+
+
+  # Install magento 2
+  # baseURLInsecure="http://${CURRENTDIR}.test/"
+  baseURLSecure="https://${CURRENTDIR}.test/"
+  backendURL="https://${CURRENTDIR}.test/${BACKEND_FRONTNAME}"
+  if [ -z "$KEY" ]; then
+  bin/magento setup:install --base-url=$baseURLSecure --base-url-secure=$baseURLSecure --backend-frontname=${BACKEND_FRONTNAME} \
+                            --language=${DEFAULT_LANGUAGE} --currency=${DEFAULT_CURRENCY} --timezone=${DEFAULT_TIMEZONE} \
+                            --db-host=localhost --db-name=${CURRENTDIR} --db-user=${DATABASE_USER} --db-password=${DATABASE_PASSWORD} \
+                            --admin-firstname=${ADMIN_FIRSTNAME} --admin-lastname=${ADMIN_LASTNAME} --admin-email=${ADMIN_EMAIL} --admin-user=${ADMIN_USERNAME} --admin-password=${ADMIN_PASSWORD} \
+                            --cleanup-database --session-save=db \
+                           # --amqp-host="rabbitmq"  --amqp-port="5672" --amqp-virtualhost="rabbitmq" \
+                           # --amqp-user="rabbitmq" --amqp-password="rabbitmq" \
+  else
+
+  bin/magento setup:install --base-url=$baseURLSecure --base-url-secure=$baseURLSecure --backend-frontname=${BACKEND_FRONTNAME} \
+                            --language=${DEFAULT_LANGUAGE} --currency=${DEFAULT_CURRENCY} --timezone=${DEFAULT_TIMEZONE} \
+                            --db-host=localhost --db-name=${CURRENTDIR} --db-user=${DATABASE_USER} --db-password=${DATABASE_PASSWORD} \
+                            --admin-firstname=${ADMIN_FIRSTNAME} --admin-lastname=${ADMIN_LASTNAME} --admin-email=${ADMIN_EMAIL} --admin-user=${ADMIN_USERNAME} --admin-password=${ADMIN_PASSWORD} \
+                            --cleanup-database --session-save=db --key=${KEY} \
+                           # --amqp-host="rabbitmq"  --amqp-port="5672" --amqp-virtualhost="rabbitmq" \
+                           # --amqp-user="rabbitmq" --amqp-password="rabbitmq" \
+  fi
+  # Install and update modules
+  bin/magento setup:upgrade
+
+  #set rewrite flag
+  bin/magento config:set web/seo/use_rewrites 1
+
+  # Clear cache
+  bin/magento cache:clean
+  bin/magento cache:flush
+
+  # Index data
+  bin/magento indexer:reindex
+
+  #set developer mode
+  bin/magento deploy:mode:set developer
+
+  # Print results
+  echo "\n"
+  echo "Installation complete.\n"
+
+  printf "%-15s%-30s\n" "Frontend" $baseURLSecure
+  printf "%-15s%-30s\n" "Backend" $backendURL
+  printf "%-15s%s: %s\n" "" "Username" ${ADMIN_USERNAME}
+  printf "%-15s%s: %s\n" "" "Password" ${ADMIN_PASSWORD}
+}
+if [ "$1" = "" ]; then
+    usage
+fi
+
+while [ -n "$1" ]
+
+# while loop starts
+
+do
+
+case "$1" in
+
+# install
+
+-i) read -r -p "Do you want to install? [N/y] " REPLY
+    if test "$REPLY" = "y" -o "$REPLY" = "Y"; then
+       installMagento
+    else
+        exit 0
+    fi
+
+    shift;;
+
+*) usage
+    shift;;
+# Exit the loop using break command
+
+esac
+
+done
