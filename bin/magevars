@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+BASEDIR=$(dirname "$0")
+
+echo "----------------------------------------"
+ln -s "$BASEDIR/../auth.json ." && echo "auth.json symlinked 👌"
+
+cp "$BASEDIR/../.env.sample" . && echo ".env.sample copied 👌"
+echo "----------------------------------------"
