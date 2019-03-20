@@ -3,7 +3,7 @@
 BASEDIR="$( cd "$( dirname "$0" )/.." && pwd )"
 
 echo "----------------------------------------"
-ln -s "$BASEDIR/auth.json ." && echo "auth.json symlinked 👌"
+ln -s "$BASEDIR/auth.json" && echo "auth.json symlinked 👌"
 
 cp "$BASEDIR/.env.sample" . && echo ".env.sample copied 👌"
 echo "----------------------------------------"
