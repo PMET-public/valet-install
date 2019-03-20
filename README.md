@@ -8,6 +8,8 @@
 
 ### Set your global auth.json credentials
 
+https://devdocs.magento.com/guides/v2.3/install-gde/prereq/connect-auth.html
+
 1. `cd ~/.vi`
 2. `cp auth.json.sample auth.json`
 3. `code auth.json`
