@@ -16,7 +16,9 @@ https://devdocs.magento.com/guides/v2.3/install-gde/prereq/connect-auth.html
 
 ### PATH that Bash up!
 
-Add `export PATH=$PATH:$HOME/.vi/bin` to .bash_profile (for bash) or .zshrc (for zsh) depending on your shell (echo $SHELL)
+Add `export PATH=$PATH:$HOME/.vi/bin` to .bash_profile (for bash) or .zshrc (for zsh) depending on your shell.
+
+💡 `echo $SHELL`
 
 --- 
 
