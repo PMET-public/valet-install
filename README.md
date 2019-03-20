@@ -26,6 +26,6 @@ Add `export PATH=$PATH:$HOME/.vi/bin` to .bash_profile (for bash) or .zshrc (for
 
 From the Magento 2 project root folder:
 
-`magevars` Creates symlinks of auth.json and copies .env.sample
+`magevars` Creates a symlink of auth.json and copies .env.sample
 
 `vp -i` Install Magento project in Valet+
