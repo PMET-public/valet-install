@@ -2,21 +2,21 @@
 
 ## Getting started
 
-### Clone valet-install to ~/.vi
+### Clone valet-install to ~/.valet-install
 
-`git clone git@github.com:PMET-public/valet-install.git ~/.vi`
+`git clone git@github.com:PMET-public/valet-install.git ~/.valet-install`
 
 ### Set your global auth.json credentials
 
 https://devdocs.magento.com/guides/v2.3/install-gde/prereq/connect-auth.html
 
-1. `cd ~/.vi`
+1. `cd ~/.valet-install`
 2. `cp auth.json.sample auth.json`
 3. `code auth.json`
 
 ### PATH that Bash up!
 
-Add `export PATH=$PATH:$HOME/.vi/bin` to .bash_profile (for bash) or .zshrc (for zsh) depending on your shell.
+Add `export PATH=$PATH:$HOME/.valet-install/bin` to .bash_profile (for bash) or .zshrc (for zsh) depending on your shell.
 
 💡 `echo $SHELL`
 
