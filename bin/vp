@@ -27,19 +27,18 @@ PROJECTPATH=$(pwd)
 # db name and dns
 CURRENTDIR=${PWD##*/}
 
-
 # ENVIRONMENTVARIABLESFILE contains the path
 # to the file that holds the required environment
 # variables for this script.
-ENVIRONMENTVARIABLESFILE="$PROJECTPATH/.env"
-if [ ! -f $ENVIRONMENTVARIABLESFILE ]; then
-  echo >&2 "The file that holds the environment variables was not found at $ENVIRONMENTVARIABLESFILE"
+ENVIRONMENTVARIABLESFILE="${PROJECTPATH}/.env"
+if [ ! -f "$ENVIRONMENTVARIABLESFILE" ]; then
+  echo >&2 "The file that holds the environment variables was not found at "$ENVIRONMENTVARIABLESFILE""
   exit 1
 fi
 
 
 # execute the file that sets the environment variables
-. $ENVIRONMENTVARIABLESFILE
+. "$ENVIRONMENTVARIABLESFILE"
 
 if [ -z "$DATABASE_USER" ]; then
   echo >&2 "The DATABASE_USER variable is not set"
