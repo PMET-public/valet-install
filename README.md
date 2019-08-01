@@ -32,5 +32,5 @@ Add `export PATH=$PATH:$HOME/.valet-install/bin` to .bash_profile (for bash) or 
 From the Magento 2 project root folder:
 
 1. `magevars` Creates a symlink of auth.json and copies .env.sample
-2. `composer install` Installs Magento's PHP modules
+2. `composer update` Installs Magento's PHP modules
 3. `vp -i` Install Magento project in Valet+
