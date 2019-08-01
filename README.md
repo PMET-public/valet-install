@@ -4,8 +4,8 @@
 
 ### Requirements
 
-- Composer (https://getcomposer.org/download/)
 - Valet Plus (https://github.com/weprovide/valet-plus)
+- Composer (https://getcomposer.org/download/)
 
 ### Clone valet-install to ~/.valet-install
 
